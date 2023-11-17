@@ -8,6 +8,7 @@ import Footer from '@components/Footer/Footer';
 import Head from '@components/Head/Head';
 import config from '@constants/config.json';
 import { ACTION } from 'types/actions';
+import Assistant from '@components/Assistant/Assistant';
 
 const Home: NextPage = () => {
   return (
@@ -16,8 +17,9 @@ const Home: NextPage = () => {
 
       <Header />
 
-      <main className={cls(utilsStyles.main, utilsStyles.columnJustifyCenter)}>
-        <CustomSwiper actions={config.actions as ACTION[]} swiper />
+      <main className={cls(utilsStyles.main)}>
+        {/* <CustomSwiper actions={config.actions as ACTION[]} swiper /> */}
+        <Assistant />
       </main>
 
       <Footer showActionsButton showAccountButton />

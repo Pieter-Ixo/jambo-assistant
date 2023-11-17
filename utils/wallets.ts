@@ -121,3 +121,10 @@ export const broadCastMessages = async (
       return null;
   }
 };
+
+export function validateIxoAddress(address: string) {
+  const valid = /^ixo(1|3)([a-zA-Z0-9]){10,39}$/.test(address);
+  return valid;
+}
+
+export const validateIxoDid = (did: string) => /^did:x:[a-zA-Z0-9]+$/.test(did);

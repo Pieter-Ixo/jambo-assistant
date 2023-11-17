@@ -1,5 +1,7 @@
-import { cosmos } from '@ixo/impactxclient-sdk';
+import { TRX_TYPES } from '@constants/transactions';
+import { cosmos, ixo } from '@ixo/impactxclient-sdk';
 import { Coin } from '@ixo/impactxclient-sdk/types/codegen/cosmos/base/v1beta1/coin';
+import { Grant } from '@ixo/impactxclient-sdk/types/codegen/cosmos/authz/v1beta1/authz';
 
 import { TRX_FEE, TRX_FEE_OPTION, TRX_MSG } from 'types/transactions';
 
@@ -148,5 +150,151 @@ export const generateWithdrawRewardTrx = ({
   value: cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward.fromPartial({
     delegatorAddress,
     validatorAddress,
+  }),
+});
+
+export const generateTransferEntityTrx = ({
+  id,
+  ownerDid,
+  ownerAddress,
+  recipientDid,
+}: {
+  id: string;
+  ownerDid: string;
+  ownerAddress: string;
+  recipientDid: string;
+}): TRX_MSG => ({
+  typeUrl: TRX_TYPES.MsgTransferEntity,
+  value: ixo.entity.v1beta1.MsgTransferEntity.fromPartial({
+    id,
+    ownerDid,
+    ownerAddress,
+    recipientDid,
+  }),
+});
+
+export type ImpactToken = {
+  id: string;
+  amount: string;
+};
+
+export const generateTransferTokenTrx = (
+  {
+    owner,
+    recipient,
+    tokens,
+  }: {
+    owner: string;
+    recipient: string;
+    tokens: ImpactToken[];
+  },
+  encode = false,
+) => {
+  const value = ixo.token.v1beta1.MsgTransferToken.fromPartial({
+    owner,
+    recipient,
+    tokens: tokens.map((b) =>
+      ixo.token.v1beta1.TokenBatch.fromPartial({
+        id: b.id,
+        amount: (b?.amount ?? 0).toString(),
+      }),
+    ),
+  });
+
+  return {
+    typeUrl: TRX_TYPES.MsgTransferToken,
+    value: encode ? ixo.token.v1beta1.MsgTransferToken.encode(value).finish() : value,
+  };
+};
+
+export const generateRetireTokenTrx = ({
+  owner,
+  reason,
+  jurisdiction,
+  tokens,
+}: {
+  owner: string;
+  reason: string;
+  jurisdiction: string;
+  tokens: ImpactToken[];
+}) => ({
+  typeUrl: TRX_TYPES.MsgRetireToken,
+  value: ixo.token.v1beta1.MsgRetireToken.fromPartial({
+    owner,
+    reason,
+    jurisdiction,
+    tokens: tokens.map((b) =>
+      ixo.token.v1beta1.TokenBatch.fromPartial({
+        id: b.id,
+        amount: (b?.amount ?? 0).toString(),
+      }),
+    ),
+  }),
+});
+
+export const generateGrantEntityAccountAuthzTrx = ({
+  entityDid,
+  owner,
+  name,
+  granteeAddress,
+  grant,
+}: {
+  entityDid: string;
+  owner: string;
+  name: string;
+  granteeAddress: string;
+  grant: Grant;
+}) => ({
+  typeUrl: TRX_TYPES.MsgGrantEntityAccountAuthz,
+  value: ixo.entity.v1beta1.MsgGrantEntityAccountAuthz.fromPartial({
+    id: entityDid,
+    ownerAddress: owner,
+    name,
+    granteeAddress,
+    grant,
+  }),
+});
+
+export const generateGenericAuthorizationTrx = ({ msg }: { msg: string }, encode = false) => {
+  const value = cosmos.authz.v1beta1.GenericAuthorization.fromPartial({
+    msg,
+  });
+  return {
+    typeUrl: TRX_TYPES.GenericAuthorization,
+    value: encode ? cosmos.authz.v1beta1.GenericAuthorization.encode(value).finish() : value,
+  };
+};
+
+export const generateGrantTrx = ({ granter, grantee, grant }: { granter: string; grantee: string; grant: Grant }) => ({
+  typeUrl: TRX_TYPES.MsgGrant,
+  value: cosmos.authz.v1beta1.MsgGrant.fromPartial({
+    granter,
+    grantee,
+    grant: cosmos.authz.v1beta1.Grant.fromPartial(grant),
+  }),
+});
+
+export const generateExecTrx = ({ grantee, msgs }: { grantee: string; msgs: TRX_MSG[] }) => ({
+  typeUrl: TRX_TYPES.MsgExec,
+  value: cosmos.authz.v1beta1.MsgExec.fromPartial({
+    grantee,
+    msgs: msgs as any[],
+  }),
+});
+
+export const generateRevokeTrx = ({
+  granter,
+  grantee,
+  msgTypeUrl,
+}: {
+  granter: string;
+  grantee: string;
+  msgTypeUrl: string;
+}) => ({
+  typeUrl: TRX_TYPES.MsgRevoke,
+  value: cosmos.authz.v1beta1.MsgRevoke.fromPartial({
+    granter,
+    grantee,
+    msgTypeUrl,
   }),
 });
