@@ -1,0 +1,30 @@
+.chatContainer {
+  max-width: 1000px;
+  width: 97%;
+  min-width: 300px; /* Adjust the width as needed */
+  height: 100%;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageContainer {
+  padding: 10px;
+  margin: 10px;
+  border-bottom: 1px solid var(--backdrop-color);
+  border-radius: 5px;
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  h6 {
+    font-weight: 500;
+    font-size: 18px;
+    padding: 0;
+    margin: 0 0 0 7px;
+  }
+}

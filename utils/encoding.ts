@@ -1,7 +1,10 @@
 import * as base58 from 'bs58';
 import { BigNumber } from 'bignumber.js';
-import { toBase64, fromBase64, toHex } from '@cosmjs/encoding';
+import { toBase64, fromBase64, toHex, fromHex } from '@cosmjs/encoding';
 import { SignDoc } from '@ixo/impactxclient-sdk/types/codegen/cosmos/tx/v1beta1/tx';
+import { TRX_MSG } from 'types/transactions';
+import { cosmos, createRegistry } from '@ixo/impactxclient-sdk';
+import { EncodeObject } from '@cosmjs/proto-signing';
 
 export const utf16_to_b64 = (str: string) => {
   return Buffer.from(str, 'utf8').toString('base64');
@@ -100,3 +103,29 @@ export const stringifySignDoc = (signDoc: SignDoc) => {
 export const urlEncodeIbcDenom = (denom: string) => (denom ?? '').replace(/^ibc\//i, 'ibc');
 
 export const urlDecodeIbcDenom = (denom: string) => (denom ?? '').replace(/^ibc/i, 'ibc/');
+
+export const uint8Arr_to_hex = (array: Uint8Array): string => {
+  const hex = toHex(array);
+  return hex;
+};
+
+export const hex_to_uint8Arr = (hex: string): Uint8Array => {
+  const uint8Arr = fromHex(hex);
+  return uint8Arr;
+};
+
+export const encodeTransactionBody = (messages: TRX_MSG[], memo: string | undefined) => {
+  const registry = createRegistry();
+  return registry?.encodeTxBody({ messages: messages as EncodeObject[], memo });
+};
+
+export const decodeTransactionBody = (txBody: Uint8Array) => {
+  const registry = createRegistry();
+  const decodedTxBody = cosmos.tx.v1beta1.TxBody.decode(txBody);
+  const messages = decodedTxBody.messages.map((message) => {
+    const typeUrl = message.typeUrl;
+    const msg = registry.decode(message);
+    return { typeUrl, value: msg };
+  });
+  return { ...decodedTxBody, messages };
+};

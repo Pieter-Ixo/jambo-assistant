@@ -1,0 +1,71 @@
+.assistantContainer {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Style for the input container */
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatContainer {
+  max-width: 1000px;
+  width: 97%;
+  min-width: 300px; /* Adjust the width as needed */
+  height: 100%;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  // flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style for the input field */
+.assistantInput {
+  max-width: 1000px;
+  width: 95%;
+  min-width: 300px; /* Adjust the width as needed */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none; /* Remove the default focus outline */
+}
+
+/* Style for the input field placeholder text */
+.assistantInput::placeholder {
+  color: #aaa;
+}
+
+.messageContainer {
+  // display: flex;
+  padding: 10px;
+  max-width: 75%;
+  // width: 75%;
+  margin: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.messageRight {
+  margin-left: 25%;
+  align-self: flex-end;
+
+  .message {
+    text-align: right;
+    display: inline-block;
+  }
+}
+
+.messageLeft {
+  margin-right: 25%;
+  align-self: flex-start;
+
+  .message {
+    text-align: left;
+    display: inline-block;
+  }
+}

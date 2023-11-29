@@ -1,4 +1,5 @@
 import { CHAIN_INFO_REQUEST } from 'types/chain';
+import config from '../constants/config.json';
 
 type RefineFunction = (str: string) => string;
 
@@ -20,11 +21,11 @@ export const ChainNames = csvToArray(process.env.NEXT_PUBLIC_CHAIN_NAMES, (str) 
 export const DefaultChainName =
   process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NAME ?? (ChainNames.includes('impacthub') ? 'impacthub' : '');
 
-export const EnableDeveloperMode = !!process.env.NEXT_PUBLIC_ENABLE_DEVELOPER_MODE;
+export const EnableDeveloperMode = !!config.enableDeveloperMode; // !!process.env.NEXT_PUBLIC_ENABLE_DEVELOPER_MODE;
 
 export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
-    ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  config.defaultChainNetwork === 'mainnet' // process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
+    ? config.defaultChainNetwork // process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
     ? 'testnet'
     : 'mainnet';
